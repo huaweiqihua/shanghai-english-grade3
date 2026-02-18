@@ -3,191 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>上海小学三年级英语测试</title>
+    <title>上海小学3-4年级英语测试</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Microsoft YaHei', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             min-height: 100vh;
             padding: 20px;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
+        .container { max-width: 800px; margin: 0 auto; }
         .card {
             background: white;
             border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
         }
         h1 {
             text-align: center;
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 28px;
+            color: #1e3c72;
+            margin-bottom: 5px;
+            font-size: 26px;
         }
         .subtitle {
             text-align: center;
-            color: #888;
-            margin-bottom: 30px;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
         }
-        .start-screen, .quiz-screen, .result-screen {
-            display: none;
+        .grade-tag {
+            display: inline-block;
+            background: #ff6b6b;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 15px;
         }
-        .active {
-            display: block;
-        }
+        .start-screen, .quiz-screen, .result-screen { display: none; }
+        .active { display: block; }
         .btn {
             display: block;
             width: 200px;
-            margin: 30px auto;
+            margin: 20px auto;
             padding: 15px 30px;
             font-size: 18px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s;
         }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        .btn:hover { transform: translateY(-2px); }
+        .btn-secondary {
+            background: #666;
+            margin-top: 10px;
         }
         .progress {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             padding: 10px;
-            background: #f0f0f0;
+            background: #f5f5f5;
             border-radius: 10px;
+            flex-wrap: wrap;
+            gap: 5px;
         }
         .progress-item {
-            width: 30px;
-            height: 30px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 12px;
             background: #ddd;
             color: #888;
         }
-        .progress-item.done {
+        .progress-item.done { background: #4caf50; color: white; }
+        .progress-item.current { background: #1e3c72; color: white; }
+        .question {
+            font-size: 20px;
+            text-align: center;
+            margin: 20px 0;
+            color: #333;
+            line-height: 1.6;
+        }
+        .question-image { font-size: 70px; text-align: center; margin: 15px 0; }
+        .hint {
+            text-align: center;
+            color: #ff6b6b;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .answer-input {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 15px 20px;
+            font-size: 22px;
+            border: 3px solid #1e3c72;
+            border-radius: 15px;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .answer-input:focus { border-color: #ff6b6b; }
+        .answer-input.correct { border-color: #4caf50; background: #e8f5e9; }
+        .answer-input.wrong { border-color: #f44336; background: #ffebee; }
+        .submit-btn {
+            display: block;
+            width: 150px;
+            margin: 10px auto;
+            padding: 12px 25px;
+            font-size: 16px;
             background: #4caf50;
             color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
         }
-        .progress-item.current {
-            background: #667eea;
+        .skip-btn {
+            display: block;
+            width: 150px;
+            margin: 10px auto;
+            padding: 12px 25px;
+            font-size: 16px;
+            background: #999;
             color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
         }
-        .question {
-            font-size: 22px;
-            text-align: center;
-            margin: 30px 0;
-            color: #333;
-        }
-        .question-image {
-            font-size: 60px;
-            text-align: center;
-            margin: 20px 0;
-        }
-        .options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin: 20px 0;
-        }
-        .option {
-            padding: 20px;
-            background: #f8f9fa;
-            border: 2px solid #e0e0e0;
-            border-radius: 15px;
+        .feedback {
             text-align: center;
             font-size: 18px;
-            cursor: pointer;
-            transition: all 0.2s;
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
         }
-        .option:hover {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
-        .option.correct {
-            background: #4caf50;
-            color: white;
-            border-color: #4caf50;
-        }
-        .option.wrong {
-            background: #f44336;
-            color: white;
-            border-color: #f44336;
-        }
-        .score-display {
-            text-align: center;
-            font-size: 60px;
-            color: #667eea;
-            margin: 20px 0;
-        }
-        .score-message {
-            text-align: center;
-            font-size: 24px;
-            color: #888;
-            margin-bottom: 20px;
-        }
-        .result-details {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 15px;
-            margin: 20px 0;
-        }
+        .feedback.show { display: block; }
+        .feedback.correct { background: #e8f5e9; color: #2e7d32; }
+        .feedback.wrong { background: #ffebee; color: #c62828; }
+        .score-display { text-align: center; font-size: 60px; color: #1e3c72; margin: 20px 0; }
+        .score-message { text-align: center; font-size: 22px; color: #666; margin-bottom: 20px; }
+        .result-details { background: #f5f5f5; padding: 20px; border-radius: 15px; margin: 20px 0; max-height: 300px; overflow-y: auto; }
         .result-item {
             display: flex;
             justify-content: space-between;
-            padding: 10px;
+            padding: 12px;
             border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
         }
-        .result-item:last-child {
-            border-bottom: none;
+        .result-item:last-child { border-bottom: none; }
+        .result-item .correct-answer { color: #4caf50; font-weight: bold; }
+        .result-item .your-answer { color: #f44336; }
+        .info-box {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
         }
+        .info-box h3 { color: #1e3c72; margin-bottom: 10px; font-size: 16px; }
+        .info-box ul { padding-left: 20px; color: #555; font-size: 14px; }
+        .info-box li { margin-bottom: 5px; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="card">
-            <h1>📚 上海小学三年级英语测试</h1>
-            <p class="subtitle">随机抽取10道题目，快来挑战吧！</p>
-            
-            <!-- 开始界面 -->
-            <div class="start-screen active" id="startScreen">
-                <div style="text-align: center; padding: 40px 0;">
-                    <div style="font-size: 80px; margin-bottom: 20px;">🎓</div>
-                    <p style="font-size: 18px; color: #666; margin-bottom: 10px;">测试内容：</p>
-                    <ul style="text-align: left; display: inline-block; color: #888;">
-                        <li>✅ 26个英文字母</li>
-                        <li>✅ 基础单词（颜色、数字、动物、食物等）</li>
-                        <li>✅ 简单对话</li>
-                        <li>✅ 常用表达</li>
-                    </ul>
-                </div>
-                <button class="btn" onclick="startQuiz()">开始测试 ▶</button>
+            <h1>📚 上海小学3-4年级英语测试</h1>
+            <p class="subtitle">沪版英语教材 · 拼写模式</p>
+            <div style="text-align: center;">
+                <span class="grade-tag">三年级 · 四年级</span>
             </div>
             
-            <!-- 答题界面 -->
+            <div class="start-screen active" id="startScreen">
+                <div class="info-box">
+                    <h3>📖 测试说明</h3>
+                    <ul>
+                        <li>基于沪版英语3-4年级教材词汇</li>
+                        <li><strong>拼写模式</strong>：请根据中文提示拼写英文单词</li>
+                        <li>大小写均可，正确拼写即得分</li>
+                        <li>每次10题，共30题题库随机抽取</li>
+                    </ul>
+                </div>
+                <button class="btn" onclick="startQuiz()">开始测试 ✍️</button>
+            </div>
+            
             <div class="quiz-screen" id="quizScreen">
                 <div class="progress" id="progress"></div>
                 <div class="question" id="question"></div>
                 <div class="question-image" id="questionImage"></div>
-                <div class="options" id="options"></div>
+                <div class="hint" id="hint"></div>
+                <input type="text" class="answer-input" id="answerInput" placeholder="请拼写英文..." autocomplete="off">
+                <button class="submit-btn" onclick="checkAnswer()">提交 ✓</button>
+                <button class="skip-btn" onclick="skipAnswer()">跳过 →</button>
+                <div class="feedback" id="feedback"></div>
             </div>
             
-            <!-- 结果界面 -->
             <div class="result-screen" id="resultScreen">
                 <div class="score-display" id="scoreDisplay"></div>
                 <div class="score-message" id="scoreMessage"></div>
@@ -198,59 +215,134 @@
     </div>
 
     <script>
+        // 沪版英语3-4年级教材词汇表
         const questions = [
-            // 字母题
-            { type: 'letter', question: '请选出大写字母 A 对应的小写形式', answer: 'a', options: ['a', 'b', 'c', 'd', 'e'], image: '' },
-            { type: 'letter', question: '大写 B 的小写是什么？', answer: 'b', options: ['a', 'b', 'c', 'd', 'e'], image: '' },
-            { type: 'letter', question: '哪个是大写字母 C？', answer: 'C', options: ['c', 'C', 'D', 'E', 'F'], image: '' },
+            // Unit 1: 问候 (Greetings)
+            { unit: "U1", question: "你好", answer: "hello", hint: "问候语" },
+            { unit: "U1", question: "早上好", answer: "good morning", hint: "问候语" },
+            { unit: "U1", question: "下午好", answer: "good afternoon", hint: "问候语" },
+            { unit: "U1", question: "再见", answer: "goodbye", hint: "告别" },
+            { unit: "U1", question: "谢谢你", answer: "thank you", hint: "礼貌用语" },
+            { unit: "U1", question: "对不起", answer: "sorry", hint: "道歉" },
+            { unit: "U1", question: "没关系", answer: "that's ok", hint: "回应" },
             
-            // 颜色题
-            { type: 'vocab', question: '这是什么颜色？', answer: 'red', options: ['red', 'blue', 'green', 'yellow', 'pink'], image: '🔴' },
-            { type: 'vocab', question: '天空是什么颜色？', answer: 'blue', options: ['red', 'blue', 'green', 'yellow', 'orange'], image: '🌤️' },
-            { type: 'vocab', question: '草地是什么颜色？', answer: 'green', options: ['red', 'blue', 'green', 'yellow', 'brown'], image: '🌿' },
-            { type: 'vocab', question: '香蕉是什么颜色？', answer: 'yellow', options: ['red', 'blue', 'green', 'yellow', 'brown'], image: '🍌' },
+            // Unit 2: 自我 (Self)
+            { unit: "U2", question: "我", answer: "i", hint: "人称代词" },
+            { unit: "U2", question: "你", answer: "you", hint: "人称代词" },
+            { unit: "U2", question: "他", answer: "he", hint: "人称代词" },
+            { unit: "U2", question: "她", answer: "she", hint: "人称代词" },
+            { unit: "U2", question: "它", answer: "it", hint: "人称代词" },
+            { unit: "U2", question: "我的", answer: "my", hint: "物主代词" },
+            { unit: "U2", question: "你的", answer: "your", hint: "物主代词" },
+            { unit: "U2", question: "名字", answer: "name", hint: "个人信息" },
+            { unit: "U2", question: "很高兴认识你", answer: "nice to meet you", hint: "自我介绍" },
             
-            // 数字题
-            { type: 'number', question: '数字 5 用英语怎么说？', answer: 'five', options: ['four', 'five', 'six', 'seven', 'eight'], image: '5️⃣' },
-            { type: 'number', question: '数字 8 用英语怎么说？', answer: 'eight', options: ['six', 'seven', 'eight', 'nine', 'ten'], image: '8️⃣' },
-            { type: 'number', question: '数字 10 用英语怎么说？', answer: 'ten', options: ['eight', 'nine', 'ten', 'eleven', 'twelve'], image: '🔟' },
+            // Unit 3: 家庭 (Family)
+            { unit: "U3", question: "父亲/爸爸", answer: "father", hint: "家人" },
+            { unit: "U3", question: "母亲/妈妈", answer: "mother", hint: "家人" },
+            { unit: "U3", question: "兄弟/哥哥", answer: "brother", hint: "家人" },
+            { unit: "U3", question: "姐妹/姐姐", answer: "sister", hint: "家人" },
+            { unit: "U3", question: "祖父/爷爷", answer: "grandfather", hint: "家人" },
+            { unit: "U3", question: "祖母/奶奶", answer: "grandmother", hint: "家人" },
+            { unit: "U3", question: "家庭", answer: "family", hint: "家人" },
+            { unit: "U3", question: "朋友", answer: "friend", hint: "人物" },
             
-            // 动物题
-            { type: 'animal', question: '这是什么动物？', answer: 'cat', options: ['dog', 'cat', 'bird', 'fish', 'rabbit'], image: '🐱' },
-            { type: 'animal', question: '狗的英语是？', answer: 'dog', options: ['dog', 'cat', 'bird', 'fish', 'duck'], image: '🐕' },
-            { type: 'animal', question: '小鸟的英语是？', answer: 'bird', options: ['dog', 'cat', 'bird', 'fish', 'tiger'], image: '🐦' },
+            // Unit 4: 数字 (Numbers)
+            { unit: "U4", question: "一", answer: "one", hint: "数字" },
+            { unit: "U4", question: "二", answer: "two", hint: "数字" },
+            { unit: "U4", question: "三", answer: "three", hint: "数字" },
+            { unit: "U4", question: "四", answer: "four", hint: "数字" },
+            { unit: "U4", question: "五", answer: "five", hint: "数字" },
+            { unit: "U4", question: "六", answer: "six", hint: "数字" },
+            { unit: "U4", question: "七", answer: "seven", hint: "数字" },
+            { unit: "U4", question: "八", answer: "eight", hint: "数字" },
+            { unit: "U4", question: "九", answer: "nine", hint: "数字" },
+            { unit: "U4", question: "十", answer: "ten", hint: "数字" },
             
-            // 食物题
-            { type: 'food', question: '苹果的英语是？', answer: 'apple', options: ['banana', 'apple', 'orange', 'grape', 'pear'], image: '🍎' },
-            { type: 'food', question: '面包的英语是？', answer: 'bread', options: ['bread', 'rice', 'milk', 'water', 'egg'], image: '🍞' },
-            { type: 'food', question: '牛奶的英语是？', answer: 'milk', options: ['water', 'juice', 'milk', 'tea', 'coffee'], image: '🥛' },
+            // Unit 5: 颜色 (Colors)
+            { unit: "U5", question: "红色", answer: "red", hint: "颜色" },
+            { unit: "U5", question: "蓝色", answer: "blue", hint: "颜色" },
+            { unit: "U5", question: "绿色", answer: "green", hint: "颜色" },
+            { unit: "U5", question: "黄色", answer: "yellow", hint: "颜色" },
+            { unit: "U5", question: "橙色", answer: "orange", hint: "颜色" },
+            { unit: "U5", question: "紫色", answer: "purple", hint: "颜色" },
+            { unit: "U5", question: "粉色", answer: "pink", hint: "颜色" },
+            { unit: "U5", question: "棕色", answer: "brown", hint: "颜色" },
+            { unit: "U5", question: "黑色", answer: "black", hint: "颜色" },
+            { unit: "U5", question: "白色", answer: "white", hint: "颜色" },
             
-            // 家庭成员
-            { type: 'family', question: '妈妈的英语是？', answer: 'mother', options: ['father', 'mother', 'brother', 'sister', 'grandmother'], image: '👩' },
-            { type: 'family', question: '爸爸的英语是？', answer: 'father', options: ['father', 'mother', 'brother', 'sister', 'grandfather'], image: '👨' },
-            { type: 'family', question: '哥哥的英语是？', answer: 'brother', options: ['father', 'mother', 'brother', 'sister', 'baby'], image: '👦' },
+            // Unit 6: 动物 (Animals)
+            { unit: "U6", question: "狗", answer: "dog", hint: "动物" },
+            { unit: "U6", question: "猫", answer: "cat", hint: "动物" },
+            { unit: "U6", question: "鸟", answer: "bird", hint: "动物" },
+            { unit: "U6", question: "鱼", answer: "fish", hint: "动物" },
+            { unit: "U6", question: "兔子", answer: "rabbit", hint: "动物" },
+            { unit: "U6", question: "猴子", answer: "monkey", hint: "动物" },
+            { unit: "U6", question: "大象", answer: "elephant", hint: "动物" },
+            { unit: "U6", question: "熊猫", answer: "panda", hint: "动物" },
+            { unit: "U6", question: "老虎", answer: "tiger", hint: "动物" },
+            { unit: "U6", question: "狮子", answer: "lion", hint: "动物" },
             
-            // 身体部位
-            { type: 'body', question: '眼睛的英语是？', answer: 'eye', options: ['eye', 'ear', 'nose', 'mouth', 'hand'], image: '👀' },
-            { type: 'body', question: '鼻子的英语是？', answer: 'nose', options: ['eye', 'ear', 'nose', 'mouth', 'face'], image: '👃' },
+            // Unit 7: 食物 (Food)
+            { unit: "U7", question: "苹果", answer: "apple", hint: "食物" },
+            { unit: "U7", question: "香蕉", answer: "banana", hint: "食物" },
+            { unit: "U7", question: "橙子", answer: "orange", hint: "食物" },
+            { unit: "U7", question: "面包", answer: "bread", hint: "食物" },
+            { unit: "U7", question: "牛奶", answer: "milk", hint: "食物" },
+            { unit: "U7", question: "水", answer: "water", hint: "食物" },
+            { unit: "U7", question: "鸡蛋", answer: "egg", hint: "食物" },
+            { unit: "U7", question: "米饭", answer: "rice", hint: "食物" },
+            { unit: "U7", question: "蛋糕", answer: "cake", hint: "食物" },
+            { unit: "U7", question: "果汁", answer: "juice", hint: "食物" },
             
-            // 日常对话
-            { type: 'dialog', question: '见面打招呼应该说？', answer: 'Hello!', options: ['Hello!', 'Goodbye!', 'Thank you!', 'Sorry!', 'Good night!'], image: '👋' },
-            { type: 'dialog', question: '感谢别人时应该说？', answer: 'Thank you!', options: ['Hello!', 'Goodbye!', 'Thank you!', 'Sorry!', 'Please!'], image: '🙏' },
-            { type: 'dialog', question: '再见怎么说？', answer: 'Goodbye!', options: ['Hello!', 'Goodbye!', 'Thank you!', 'Sorry!', 'OK!'], image: '👋' },
-            { type: 'dialog', question: '对不起怎么说？', answer: 'Sorry!', options: ['Hello!', 'Goodbye!', 'Thank you!', 'Sorry!', 'Please!'], image: '😢' },
+            // Unit 8: 学校 (School)
+            { unit: "U8", question: "学校", answer: "school", hint: "学校" },
+            { unit: "U8", question: "教室", answer: "classroom", hint: "学校" },
+            { unit: "U8", question: "书", answer: "book", hint: "文具" },
+            { unit: "U8", question: "铅笔", answer: "pencil", hint: "文具" },
+            { unit: "U8", question: "钢笔", answer: "pen", hint: "文具" },
+            { unit: "U8", question: "尺子", answer: "ruler", hint: "文具" },
+            { unit: "U8", question: "书包", answer: "bag", hint: "文具" },
+            { unit: "U8", question: "老师", answer: "teacher", hint: "人物" },
+            { unit: "U8", question: "学生", answer: "student", hint: "人物" },
             
-            // 星期
-            { type: 'week', question: '今天是 Monday（星期一），明天是？', answer: 'Tuesday', options: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], image: '📅' },
-            { type: 'week', question: '一周的第一天是？', answer: 'Sunday', options: ['Monday', 'Saturday', 'Sunday', 'Tuesday', 'Wednesday'], image: '🗓️' },
+            // Unit 9: 身体部位 (Body)
+            { unit: "U9", question: "头", answer: "head", hint: "身体" },
+            { unit: "U9", question: "脸", answer: "face", hint: "身体" },
+            { unit: "U9", question: "眼睛", answer: "eye", hint: "身体" },
+            { unit: "U9", question: "鼻子", answer: "nose", hint: "身体" },
+            { unit: "U9", question: "嘴巴", answer: "mouth", hint: "身体" },
+            { unit: "U9", question: "耳朵", answer: "ear", hint: "身体" },
+            { unit: "U9", question: "手", answer: "hand", hint: "身体" },
+            { unit: "U9", question: "脚", answer: "foot", hint: "身体" },
             
-            // 动词
-            { type: 'verb', question: 'eat（吃）的正在进行时是？', answer: 'eating', options: ['eat', 'eating', 'eats', 'ate', 'eaten'], image: '🍽️' },
-            { type: 'verb', question: 'run（跑）的过去式是？', answer: 'ran', options: ['run', 'running', 'runs', 'ran', 'ranned'], image: '🏃' },
+            // Unit 10: 星期 (Week)
+            { unit: "U10", question: "星期一", answer: "monday", hint: "星期" },
+            { unit: "U10", question: "星期二", answer: "tuesday", hint: "星期" },
+            { unit: "U10", question: "星期三", answer: "wednesday", hint: "星期" },
+            { unit: "U10", question: "星期四", answer: "thursday", hint: "星期" },
+            { unit: "U10", question: "星期五", answer: "friday", hint: "星期" },
+            { unit: "U10", question: "星期六", answer: "saturday", hint: "星期" },
+            { unit: "U10", question: "星期日/天", answer: "sunday", hint: "星期" },
+            { unit: "U10", question: "周/星期", answer: "week", hint: "时间" },
             
-            // 问候语
-            { type: 'greeting', question: '早上好怎么说？', answer: 'Good morning!', options: ['Good morning!', 'Good afternoon!', 'Good evening!', 'Good night!', 'Hello!'], image: '🌅' },
-            { type: 'greeting', question: '晚安怎么说？', answer: 'Good night!', options: ['Good morning!', 'Good afternoon!', 'Good evening!', 'Good night!', 'Goodbye!'], image: '🌙' },
+            // Unit 11: 科目 (Subjects)
+            { unit: "U11", question: "英语", answer: "english", hint: "科目" },
+            { unit: "U11", question: "数学", answer: "maths", hint: "科目" },
+            { unit: "U11", question: "语文", answer: "chinese", hint: "科目" },
+            { unit: "U11", question: "音乐", answer: "music", hint: "科目" },
+            { unit: "U11", question: "美术", answer: "art", hint: "科目" },
+            { unit: "U11", question: "体育", answer: "pe", hint: "科目" },
+            
+            // Unit 12: 活动 (Activities)
+            { unit: "U12", question: "阅读", answer: "read", hint: "动词" },
+            { unit: "U12", question: "书写", answer: "write", hint: "动词" },
+            { unit: "U12", question: "画画", answer: "draw", hint: "动词" },
+            { unit: "U12", question: "唱歌", answer: "sing", hint: "动词" },
+            { unit: "U12", question: "跳舞", answer: "dance", hint: "动词" },
+            { unit: "U12", question: "游戏", answer: "play", hint: "动词" },
+            { unit: "U12", question: "听", answer: "listen", hint: "动词" },
+            { unit: "U12", question: "说", answer: "speak", hint: "动词" },
         ];
 
         let currentQuestions = [];
@@ -282,7 +374,7 @@
         function showQuestion() {
             const q = currentQuestions[currentIndex];
             
-            // 更新进度条
+            // 更新进度
             let progressHTML = '';
             for (let i = 0; i < currentQuestions.length; i++) {
                 if (i < currentIndex) {
@@ -296,46 +388,67 @@
             document.getElementById('progress').innerHTML = progressHTML;
             
             // 显示题目
-            document.getElementById('question').textContent = q.question;
-            document.getElementById('questionImage').textContent = q.image || '';
+            document.getElementById('question').textContent = `(${q.unit}) ${q.question}`;
+            document.getElementById('questionImage').textContent = getEmoji(q.question);
+            document.getElementById('hint').textContent = `提示: ${q.hint}`;
             
-            // 显示选项
-            let optionsHTML = '';
-            const shuffledOptions = shuffleArray([...q.options]);
-            shuffledOptions.forEach(opt => {
-                optionsHTML += `<div class="option" onclick="selectOption('${opt}', this)">${opt}</div>`;
-            });
-            document.getElementById('options').innerHTML = optionsHTML;
+            // 重置输入框
+            const input = document.getElementById('answerInput');
+            input.value = '';
+            input.className = 'answer-input';
+            input.focus();
+            
+            document.getElementById('feedback').className = 'feedback';
         }
 
-        function selectOption(selected, element) {
+        function getEmoji(word) {
+            const emojiMap = {
+                '你好': '👋', '早上好': '🌅', '下午好': '🌤️', '再见': '👋', '谢谢你': '🙏', '对不起': '😢',
+                '我': '👤', '你': '👤', '他': '👨', '她': '👩', '它': '🐱',
+                '父亲/爸爸': '👨', '母亲/妈妈': '👩', '兄弟/哥哥': '👦', '姐妹/姐姐': '👧', '祖父/爷爷': '👴', '祖母/奶奶': '👵',
+                '一': '1️⃣', '二': '2️⃣', '三': '3️⃣', '四': '4️⃣', '五': '5️⃣', '六': '6️⃣', '七': '7️⃣', '八': '8️⃣', '九': '9️⃣', '十': '🔟',
+                '红色': '🔴', '蓝色': '🔵', '绿色': '🟢', '黄色': '🟡', '橙色': '🟠', '紫色': '🟣', '粉色': '💗', '棕色': '🟤', '黑色': '⚫', '白色': '⚪',
+                '狗': '🐕', '猫': '🐱', '鸟': '🐦', '鱼': '🐟', '兔子': '🐰', '猴子': '🐵', '大象': '🐘', '熊猫': '🐼', '老虎': '🐯', '狮子': '🦁',
+                '苹果': '🍎', '香蕉': '🍌', '橙子': '🍊', '面包': '🍞', '牛奶': '🥛', '水': '💧', '鸡蛋': '🥚', '米饭': '🍚', '蛋糕': '🍰', '果汁': '🧃',
+                '学校': '🏫', '教室': '🏠', '书': '📖', '铅笔': '✏️', '钢笔': '🖊️', '尺子': '📏', '书包': '🎒', '老师': '👨‍🏫', '学生': '🎓',
+                '头': '🗣️', 'face': '😊', '眼睛': '👀', '鼻子': '👃', '嘴巴': '👄', '耳朵': '👂', '手': '✋', '脚': '🦶',
+                '星期一': '📅', '星期二': '📅', '星期三': '📅', '星期四': '📅', '星期五': '📅', '星期六': '📅', '星期日/天': '📅',
+                '英语': '📚', '数学': '🔢', '语文': '📖', '音乐': '🎵', '美术': '🎨', '体育': '⚽',
+                '阅读': '📖', '书写': '✍️', '画画': '🎨', '唱歌': '🎤', '跳舞': '💃', '游戏': '🎮'
+            };
+            return emojiMap[word] || '📝';
+        }
+
+        function normalizeAnswer(answer) {
+            return answer.toLowerCase().trim();
+        }
+
+        function checkAnswer() {
+            const input = document.getElementById('answerInput');
+            const userAnswer = normalizeAnswer(input.value);
             const q = currentQuestions[currentIndex];
-            const isCorrect = selected === q.answer;
+            const correctAnswer = normalizeAnswer(q.answer);
             
-            // 禁用所有选项
-            const options = document.querySelectorAll('.option');
-            options.forEach(opt => {
-                opt.style.pointerEvents = 'none';
-                if (opt.textContent === q.answer) {
-                    opt.classList.add('correct');
-                }
-            });
+            const isCorrect = userAnswer === correctAnswer;
             
             if (isCorrect) {
                 score++;
-                element.classList.add('correct');
+                input.classList.add('correct');
+                document.getElementById('feedback').className = 'feedback show correct';
+                document.getElementById('feedback').textContent = '✅ 正确！';
             } else {
-                element.classList.add('wrong');
+                input.classList.add('wrong');
+                document.getElementById('feedback').className = 'feedback show wrong';
+                document.getElementById('feedback').textContent = `❌ 正确答案是: ${q.answer}`;
             }
             
             userAnswers.push({
                 question: q.question,
-                selected: selected,
+                selected: input.value,
                 correct: q.answer,
                 isCorrect: isCorrect
             });
             
-            // 延迟进入下一题
             setTimeout(() => {
                 currentIndex++;
                 if (currentIndex < currentQuestions.length) {
@@ -343,38 +456,55 @@
                 } else {
                     showResult();
                 }
-            }, 1000);
+            }, 1500);
+        }
+
+        function skipAnswer() {
+            const q = currentQuestions[currentIndex];
+            userAnswers.push({
+                question: q.question,
+                selected: '(跳过)',
+                correct: q.answer,
+                isCorrect: false
+            });
+            
+            currentIndex++;
+            if (currentIndex < currentQuestions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
         }
 
         function showResult() {
             document.getElementById('quizScreen').classList.remove('active');
             document.getElementById('resultScreen').classList.add('active');
             
-            const percentage = (score / currentQuestions.length) * 100;
             document.getElementById('scoreDisplay').textContent = `${score}/${currentQuestions.length}`;
             
+            const percentage = (score / currentQuestions.length) * 100;
             let message = '';
-            if (percentage === 100) {
-                message = '🎉 太棒了！满分！';
-            } else if (percentage >= 80) {
-                message = '🌟 非常优秀！';
-            } else if (percentage >= 60) {
-                message = '👍 做得不错！';
-            } else if (percentage >= 40) {
-                message = '📚 再加油！';
-            } else {
-                message = '💪 继续努力！';
-            }
+            if (percentage === 100) message = '🎉 太棒了！满分！';
+            else if (percentage >= 80) message = '🌟 非常优秀！';
+            else if (percentage >= 60) message = '👍 做得不错！';
+            else if (percentage >= 40) message = '📚 再加油！';
+            else message = '💪 继续努力！';
+            
             document.getElementById('scoreMessage').textContent = message;
             
-            // 显示详情
             let detailsHTML = '';
             userAnswers.forEach((answer, index) => {
-                const status = answer.isCorrect ? '✅' : '❌';
+                const status = answer.isCorrect ? '✅' : (answer.selected === '(跳过)' ? '⏭️' : '❌');
+                const yourAnswer = answer.selected === '(跳过)' ? '<span class="your-answer">(跳过)</span>' : 
+                    answer.isCorrect ? answer.selected : `<span class="your-answer">${answer.selected}</span>`;
                 detailsHTML += `
                     <div class="result-item">
                         <span>${index + 1}. ${answer.question}</span>
                         <span>${status}</span>
+                    </div>
+                    <div class="result-item">
+                        <span>你的答案: ${yourAnswer}</span>
+                        <span class="correct-answer">正确答案: ${answer.correct}</span>
                     </div>
                 `;
             });
@@ -385,6 +515,13 @@
             document.getElementById('resultScreen').classList.remove('active');
             document.getElementById('startScreen').classList.add('active');
         }
+
+        // 回车提交
+        document.getElementById('answerInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
     </script>
 </body>
 </html>

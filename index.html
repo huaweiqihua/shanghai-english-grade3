@@ -2,355 +2,483 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>上海小学3-4年级英语测试</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>沪版英语3-4年级</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html, body { 
+            height: 100%; 
+            overflow: hidden;
+            touch-action: pan-y;
+        }
         body {
             font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            min-height: 100vh;
+        }
+        .container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 模式选择 */
+        .mode-select {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
         }
-        .container { max-width: 800px; margin: 0 auto; }
-        .card {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        }
-        h1 {
-            text-align: center;
-            color: #1e3c72;
-            margin-bottom: 5px;
-            font-size: 26px;
-        }
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-        .grade-tag {
-            display: inline-block;
-            background: #ff6b6b;
+        .mode-select h1 {
             color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            margin-bottom: 15px;
+            font-size: 28px;
+            margin-bottom: 40px;
+            text-align: center;
         }
-        .start-screen, .quiz-screen, .result-screen { display: none; }
-        .active { display: block; }
-        .btn {
-            display: block;
+        .mode-btn {
             width: 200px;
-            margin: 20px auto;
-            padding: 15px 30px;
-            font-size: 18px;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
+            padding: 25px;
+            margin: 15px;
+            font-size: 22px;
             border: none;
-            border-radius: 50px;
+            border-radius: 20px;
             cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .btn:hover { transform: translateY(-2px); }
-        .btn-secondary {
-            background: #666;
-            margin-top: 10px;
-        }
-        .progress {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 25px;
-            padding: 10px;
-            background: #f5f5f5;
-            border-radius: 10px;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
-        .progress-item {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
+            transition: transform 0.2s, box-shadow 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
-            background: #ddd;
-            color: #888;
+            gap: 10px;
         }
-        .progress-item.done { background: #4caf50; color: white; }
-        .progress-item.current { background: #1e3c72; color: white; }
-        .question {
-            font-size: 20px;
-            text-align: center;
-            margin: 20px 0;
-            color: #333;
-            line-height: 1.6;
-        }
-        .question-image { font-size: 70px; text-align: center; margin: 15px 0; }
-        .hint {
-            text-align: center;
-            color: #ff6b6b;
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
-        .answer-input {
-            display: block;
-            width: 100%;
-            max-width: 400px;
-            margin: 20px auto;
-            padding: 15px 20px;
-            font-size: 22px;
-            border: 3px solid #1e3c72;
-            border-radius: 15px;
-            text-align: center;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        .answer-input:focus { border-color: #ff6b6b; }
-        .answer-input.correct { border-color: #4caf50; background: #e8f5e9; }
-        .answer-input.wrong { border-color: #f44336; background: #ffebee; }
-        .submit-btn {
-            display: block;
-            width: 150px;
-            margin: 10px auto;
-            padding: 12px 25px;
-            font-size: 16px;
-            background: #4caf50;
+        .mode-btn:active { transform: scale(0.95); }
+        .mode-btn.memory {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
             color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(255,107,107,0.4);
         }
-        .skip-btn {
-            display: block;
-            width: 150px;
-            margin: 10px auto;
-            padding: 12px 25px;
-            font-size: 16px;
-            background: #999;
+        .mode-btn.test {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
             color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(76,175,80,0.4);
         }
-        .feedback {
-            text-align: center;
-            font-size: 18px;
-            margin: 15px 0;
-            padding: 15px;
-            border-radius: 10px;
+        
+        /* 记忆模式 - 卡片 */
+        .memory-mode {
             display: none;
+            height: 100%;
+            flex-direction: column;
         }
-        .feedback.show { display: block; }
-        .feedback.correct { background: #e8f5e9; color: #2e7d32; }
-        .feedback.wrong { background: #ffebee; color: #c62828; }
-        .score-display { text-align: center; font-size: 60px; color: #1e3c72; margin: 20px 0; }
-        .score-message { text-align: center; font-size: 22px; color: #666; margin-bottom: 20px; }
-        .result-details { background: #f5f5f5; padding: 20px; border-radius: 15px; margin: 20px 0; max-height: 300px; overflow-y: auto; }
-        .result-item {
+        .memory-mode.active { display: flex; }
+        
+        .card-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            position: absolute;
+            width: 90%;
+            max-width: 350px;
+            height: 70%;
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+            transition: transform 0.3s, opacity 0.3s;
+            cursor: grab;
+        }
+        .card.swiping { transition: none; }
+        .card-image {
+            font-size: 100px;
+            margin-bottom: 20px;
+        }
+        .card-word {
+            font-size: 36px;
+            color: #1e3c72;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .card-phonetic {
+            font-size: 18px;
+            color: #888;
+            margin-bottom: 15px;
+            font-family: 'Lucida Sans', sans-serif;
+        }
+        .card-chinese {
+            font-size: 22px;
+            color: #333;
+        }
+        .card-audio {
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: #1e3c72;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-nav {
+            padding: 20px;
             display: flex;
             justify-content: space-between;
-            padding: 12px;
-            border-bottom: 1px solid #e0e0e0;
+            color: white;
             font-size: 14px;
         }
-        .result-item:last-child { border-bottom: none; }
-        .result-item .correct-answer { color: #4caf50; font-weight: bold; }
-        .result-item .your-answer { color: #f44336; }
-        .info-box {
-            background: #e3f2fd;
+        .card-nav span { opacity: 0.8; }
+        .back-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            z-index: 100;
+        }
+        
+        /* 测试模式 */
+        .test-mode {
+            display: none;
+            height: 100%;
+            flex-direction: column;
             padding: 20px;
+        }
+        .test-mode.active { display: flex; }
+        
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .test-header .back-btn {
+            position: static;
+        }
+        .test-progress {
+            color: white;
+            font-size: 16px;
+        }
+        
+        .test-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .test-question {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+        .test-hint {
+            color: rgba(255,255,255,0.7);
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+        .test-input-container {
+            width: 100%;
+            max-width: 400px;
+        }
+        .test-input {
+            width: 100%;
+            padding: 20px;
+            font-size: 24px;
+            border: 3px solid white;
             border-radius: 15px;
+            background: rgba(255,255,255,0.9);
+            outline: none;
+            text-align: center;
+        }
+        .test-input:focus { border-color: #ffd700; }
+        .test-input.correct { border-color: #4caf50; background: #e8f5e9; }
+        .test-input.wrong { border-color: #f44336; background: #ffebee; }
+        
+        .test-btns {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .test-btn {
+            padding: 15px 40px;
+            font-size: 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+        .test-btn.submit { background: #4caf50; color: white; }
+        .test-btn.skip { background: #999; color: white; }
+        
+        .test-feedback {
+            margin-top: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 18px;
+            display: none;
+        }
+        .test-feedback.show { display: block; }
+        .test-feedback.correct { background: #4caf50; color: white; }
+        .test-feedback.wrong { background: #f44336; color: white; }
+        
+        /* 结果页面 */
+        .result-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 20px;
+        }
+        .result-screen.active { display: flex; }
+        .result-score {
+            font-size: 80px;
+            color: white;
+            font-weight: bold;
+        }
+        .result-message {
+            font-size: 24px;
+            color: rgba(255,255,255,0.9);
             margin: 20px 0;
         }
-        .info-box h3 { color: #1e3c72; margin-bottom: 10px; font-size: 16px; }
-        .info-box ul { padding-left: 20px; color: #555; font-size: 14px; }
-        .info-box li { margin-bottom: 5px; }
+        .result-btns {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .result-btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+        .result-btn.primary { background: white; color: #1e3c72; }
+        .result-btn.secondary { background: rgba(255,255,255,0.3); color: white; }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="card">
-            <h1>📚 上海小学3-4年级英语测试</h1>
-            <p class="subtitle">沪版英语教材 · 拼写模式</p>
-            <div style="text-align: center;">
-                <span class="grade-tag">三年级 · 四年级</span>
-            </div>
-            
-            <div class="start-screen active" id="startScreen">
-                <div class="info-box">
-                    <h3>📖 测试说明</h3>
-                    <ul>
-                        <li>基于沪版英语3-4年级教材词汇</li>
-                        <li><strong>拼写模式</strong>：请根据中文提示拼写英文单词</li>
-                        <li>大小写均可，正确拼写即得分</li>
-                        <li>每次10题，共30题题库随机抽取</li>
-                    </ul>
+        <!-- 模式选择 -->
+        <div class="mode-select" id="modeSelect">
+            <h1>📚 沪版英语<br>3-4年级</h1>
+            <button class="mode-btn memory" onclick="startMemoryMode()">
+                🧠 记忆模式
+            </button>
+            <button class="mode-btn test" onclick="startTestMode()">
+                ✍️ 测试模式
+            </button>
+        </div>
+        
+        <!-- 记忆模式 -->
+        <div class="memory-mode" id="memoryMode">
+            <button class="back-btn" onclick="goBack()">← 返回</button>
+            <div class="card-container" id="cardContainer">
+                <div class="card" id="flashcard">
+                    <div class="card-image" id="cardImage">🐕</div>
+                    <div class="card-word" id="cardWord">dog</div>
+                    <div class="card-phonetic" id="cardPhonetic">[dɒɡ]</div>
+                    <div class="card-chinese" id="cardChinese">狗</div>
+                    <button class="card-audio" onclick="speakWord()">
+                        🔊 朗读
+                    </button>
                 </div>
-                <button class="btn" onclick="startQuiz()">开始测试 ✍️</button>
             </div>
-            
-            <div class="quiz-screen" id="quizScreen">
-                <div class="progress" id="progress"></div>
-                <div class="question" id="question"></div>
-                <div class="question-image" id="questionImage"></div>
-                <div class="hint" id="hint"></div>
-                <input type="text" class="answer-input" id="answerInput" placeholder="请拼写英文..." autocomplete="off">
-                <button class="submit-btn" onclick="checkAnswer()">提交 ✓</button>
-                <button class="skip-btn" onclick="skipAnswer()">跳过 →</button>
-                <div class="feedback" id="feedback"></div>
+            <div class="card-nav">
+                <span>← 左滑复习</span>
+                <span id="cardIndex">1 / 10</span>
+                <span>右滑下一个 →</span>
             </div>
-            
-            <div class="result-screen" id="resultScreen">
-                <div class="score-display" id="scoreDisplay"></div>
-                <div class="score-message" id="scoreMessage"></div>
-                <div class="result-details" id="resultDetails"></div>
-                <button class="btn" onclick="restartQuiz()">再测一次 🔄</button>
+        </div>
+        
+        <!-- 测试模式 -->
+        <div class="test-mode" id="testMode">
+            <div class="test-header">
+                <button class="back-btn" onclick="goBack()">← 返回</button>
+                <span class="test-progress" id="testProgress">1 / 10</span>
+            </div>
+            <div class="test-content">
+                <div class="test-question" id="testQuestion">狗</div>
+                <div class="test-hint" id="testHint">请拼写英文</div>
+                <div class="test-input-container">
+                    <input type="text" class="test-input" id="testInput" 
+                           placeholder="请输入英文..." 
+                           autocomplete="off" 
+                           autocapitalize="off" 
+                           spellcheck="false">
+                </div>
+                <div class="test-btns">
+                    <button class="test-btn submit" onclick="submitAnswer()">提交</button>
+                    <button class="test-btn skip" onclick="skipTest()">跳过</button>
+                </div>
+                <div class="test-feedback" id="testFeedback"></div>
+            </div>
+        </div>
+        
+        <!-- 结果页面 -->
+        <div class="result-screen" id="resultScreen">
+            <div class="result-score" id="resultScore">8/10</div>
+            <div class="result-message" id="resultMessage">很棒！继续努力！</div>
+            <div class="result-btns">
+                <button class="result-btn primary" onclick="restartTest()">再测一次</button>
+                <button class="result-btn secondary" onclick="goBack()">返回首页</button>
             </div>
         </div>
     </div>
 
     <script>
-        // 沪版英语3-4年级教材词汇表
-        const questions = [
-            // Unit 1: 问候 (Greetings)
-            { unit: "U1", question: "你好", answer: "hello", hint: "问候语" },
-            { unit: "U1", question: "早上好", answer: "good morning", hint: "问候语" },
-            { unit: "U1", question: "下午好", answer: "good afternoon", hint: "问候语" },
-            { unit: "U1", question: "再见", answer: "goodbye", hint: "告别" },
-            { unit: "U1", question: "谢谢你", answer: "thank you", hint: "礼貌用语" },
-            { unit: "U1", question: "对不起", answer: "sorry", hint: "道歉" },
-            { unit: "U1", question: "没关系", answer: "that's ok", hint: "回应" },
+        // 沪版英语3-4年级教材词汇表（带音标）
+        const vocabList = [
+            // Unit 1: 问候
+            { word: 'hello', chinese: '你好', phonetic: '[həˈləʊ]', emoji: '👋' },
+            { word: 'good morning', chinese: '早上好', phonetic: '[ɡʊd ˈmɔːnɪŋ]', emoji: '🌅' },
+            { word: 'good afternoon', chinese: '下午好', phonetic: '[ɡʊd ˌɑːftəˈnuːn]', emoji: '🌤️' },
+            { word: 'goodbye', chinese: '再见', phonetic: '[ɡʊdˈbaɪ]', emoji: '👋' },
+            { word: 'thank you', chinese: '谢谢你', phonetic: '[θæŋk juː]', emoji: '🙏' },
+            { word: 'sorry', chinese: '对不起', phonetic: '[ˈsɒri]', emoji: '😢' },
+            { word: 'nice to meet you', chinese: '很高兴认识你', phonetic: '[naɪs tuː miːt juː]', emoji: '😊' },
             
-            // Unit 2: 自我 (Self)
-            { unit: "U2", question: "我", answer: "i", hint: "人称代词" },
-            { unit: "U2", question: "你", answer: "you", hint: "人称代词" },
-            { unit: "U2", question: "他", answer: "he", hint: "人称代词" },
-            { unit: "U2", question: "她", answer: "she", hint: "人称代词" },
-            { unit: "U2", question: "它", answer: "it", hint: "人称代词" },
-            { unit: "U2", question: "我的", answer: "my", hint: "物主代词" },
-            { unit: "U2", question: "你的", answer: "your", hint: "物主代词" },
-            { unit: "U2", question: "名字", answer: "name", hint: "个人信息" },
-            { unit: "U2", question: "很高兴认识你", answer: "nice to meet you", hint: "自我介绍" },
+            // Unit 2: 自我
+            { word: 'I', chinese: '我', phonetic: '[aɪ]', emoji: '👤' },
+            { word: 'you', chinese: '你', phonetic: '[juː]', emoji: '👤' },
+            { word: 'he', chinese: '他', phonetic: '[hiː]', emoji: '👨' },
+            { word: 'she', chinese: '她', phonetic: '[ʃiː]', emoji: '👩' },
+            { word: 'it', chinese: '它', phonetic: '[ɪt]', emoji: '🐱' },
+            { word: 'my', chinese: '我的', phonetic: '[maɪ]', emoji: '✋' },
+            { word: 'your', chinese: '你的', phonetic: '[jɔː]', emoji: '✋' },
+            { word: 'name', chinese: '名字', phonetic: '[neɪm]', emoji: '📛' },
             
-            // Unit 3: 家庭 (Family)
-            { unit: "U3", question: "父亲/爸爸", answer: "father", hint: "家人" },
-            { unit: "U3", question: "母亲/妈妈", answer: "mother", hint: "家人" },
-            { unit: "U3", question: "兄弟/哥哥", answer: "brother", hint: "家人" },
-            { unit: "U3", question: "姐妹/姐姐", answer: "sister", hint: "家人" },
-            { unit: "U3", question: "祖父/爷爷", answer: "grandfather", hint: "家人" },
-            { unit: "U3", question: "祖母/奶奶", answer: "grandmother", hint: "家人" },
-            { unit: "U3", question: "家庭", answer: "family", hint: "家人" },
-            { unit: "U3", question: "朋友", answer: "friend", hint: "人物" },
+            // Unit 3: 家庭
+            { word: 'father', chinese: '爸爸', phonetic: '[ˈfɑːðə]', emoji: '👨' },
+            { word: 'mother', chinese: '妈妈', phonetic: '[ˈmʌðə]', emoji: '👩' },
+            { word: 'brother', chinese: '哥哥/弟弟', phonetic: '[ˈbrʌðə]', emoji: '👦' },
+            { word: 'sister', chinese: '姐姐/妹妹', phonetic: '[ˈsɪstə]', emoji: '👧' },
+            { word: 'grandfather', chinese: '爷爷/外公', phonetic: '[ˈɡrænfɑːðə]', emoji: '👴' },
+            { word: 'grandmother', chinese: '奶奶/外婆', phonetic: '[ˈɡrænmʌðə]', emoji: '👵' },
+            { word: 'family', chinese: '家庭', phonetic: '[ˈfæməli]', emoji: '👨‍👩‍👧‍👦' },
+            { word: 'friend', chinese: '朋友', phonetic: '[frend]', emoji: '👫' },
             
-            // Unit 4: 数字 (Numbers)
-            { unit: "U4", question: "一", answer: "one", hint: "数字" },
-            { unit: "U4", question: "二", answer: "two", hint: "数字" },
-            { unit: "U4", question: "三", answer: "three", hint: "数字" },
-            { unit: "U4", question: "四", answer: "four", hint: "数字" },
-            { unit: "U4", question: "五", answer: "five", hint: "数字" },
-            { unit: "U4", question: "六", answer: "six", hint: "数字" },
-            { unit: "U4", question: "七", answer: "seven", hint: "数字" },
-            { unit: "U4", question: "八", answer: "eight", hint: "数字" },
-            { unit: "U4", question: "九", answer: "nine", hint: "数字" },
-            { unit: "U4", question: "十", answer: "ten", hint: "数字" },
+            // Unit 4: 数字
+            { word: 'one', chinese: '一', phonetic: '[wʌn]', emoji: '1️⃣' },
+            { word: 'two', chinese: '二', phonetic: '[tuː]', emoji: '2️⃣' },
+            { word: 'three', chinese: '三', phonetic: '[θriː]', emoji: '3️⃣' },
+            { word: 'four', chinese: '四', phonetic: '[fɔː]', emoji: '4️⃣' },
+            { word: 'five', chinese: '五', phonetic: '[faɪv]', emoji: '5️⃣' },
+            { word: 'six', chinese: '六', phonetic: '[sɪks]', emoji: '6️⃣' },
+            { word: 'seven', chinese: '七', phonetic: '[ˈsevən]', emoji: '7️⃣' },
+            { word: 'eight', chinese: '八', phonetic: '[eɪt]', emoji: '8️⃣' },
+            { word: 'nine', chinese: '九', phonetic: '[naɪn]', emoji: '9️⃣' },
+            { word: 'ten', chinese: '十', phonetic: '[ten]', emoji: '🔟' },
             
-            // Unit 5: 颜色 (Colors)
-            { unit: "U5", question: "红色", answer: "red", hint: "颜色" },
-            { unit: "U5", question: "蓝色", answer: "blue", hint: "颜色" },
-            { unit: "U5", question: "绿色", answer: "green", hint: "颜色" },
-            { unit: "U5", question: "黄色", answer: "yellow", hint: "颜色" },
-            { unit: "U5", question: "橙色", answer: "orange", hint: "颜色" },
-            { unit: "U5", question: "紫色", answer: "purple", hint: "颜色" },
-            { unit: "U5", question: "粉色", answer: "pink", hint: "颜色" },
-            { unit: "U5", question: "棕色", answer: "brown", hint: "颜色" },
-            { unit: "U5", question: "黑色", answer: "black", hint: "颜色" },
-            { unit: "U5", question: "白色", answer: "white", hint: "颜色" },
+            // Unit 5: 颜色
+            { word: 'red', chinese: '红色', phonetic: '[red]', emoji: '🔴' },
+            { word: 'blue', chinese: '蓝色', phonetic: '[bluː]', emoji: '🔵' },
+            { word: 'green', chinese: '绿色', phonetic: '[ɡriːn]', emoji: '🟢' },
+            { word: 'yellow', chinese: '黄色', phonetic: '[ˈjeləʊ]', emoji: '🟡' },
+            { word: 'orange', chinese: '橙色', phonetic: '[ˈɒrɪndʒ]', emoji: '🟠' },
+            { word: 'purple', chinese: '紫色', phonetic: '[ˈpɜːpl]', emoji: '🟣' },
+            { word: 'pink', chinese: '粉色', phonetic: '[pɪŋk]', emoji: '💗' },
+            { word: 'brown', chinese: '棕色', phonetic: '[braʊn]', emoji: '🟤' },
+            { word: 'black', chinese: '黑色', phonetic: '[blæk]', emoji: '⚫' },
+            { word: 'white', chinese: '白色', phonetic: '[waɪt]', emoji: '⚪' },
             
-            // Unit 6: 动物 (Animals)
-            { unit: "U6", question: "狗", answer: "dog", hint: "动物" },
-            { unit: "U6", question: "猫", answer: "cat", hint: "动物" },
-            { unit: "U6", question: "鸟", answer: "bird", hint: "动物" },
-            { unit: "U6", question: "鱼", answer: "fish", hint: "动物" },
-            { unit: "U6", question: "兔子", answer: "rabbit", hint: "动物" },
-            { unit: "U6", question: "猴子", answer: "monkey", hint: "动物" },
-            { unit: "U6", question: "大象", answer: "elephant", hint: "动物" },
-            { unit: "U6", question: "熊猫", answer: "panda", hint: "动物" },
-            { unit: "U6", question: "老虎", answer: "tiger", hint: "动物" },
-            { unit: "U6", question: "狮子", answer: "lion", hint: "动物" },
+            // Unit 6: 动物
+            { word: 'dog', chinese: '狗', phonetic: '[dɒɡ]', emoji: '🐕' },
+            { word: 'cat', chinese: '猫', phonetic: '[kæt]', emoji: '🐱' },
+            { word: 'bird', chinese: '鸟', phonetic: '[bɜːd]', emoji: '🐦' },
+            { word: 'fish', chinese: '鱼', phonetic: '[fɪʃ]', emoji: '🐟' },
+            { word: 'rabbit', chinese: '兔子', phonetic: '[ˈræbɪt]', emoji: '🐰' },
+            { word: 'monkey', chinese: '猴子', phonetic: '[ˈmʌŋki]', emoji: '🐵' },
+            { word: 'elephant', chinese: '大象', phonetic: '[ˈelɪfənt]', emoji: '🐘' },
+            { word: 'panda', chinese: '熊猫', phonetic: '[ˈpændə]', emoji: '🐼' },
+            { word: 'tiger', chinese: '老虎', phonetic: '[ˈtaɪɡə]', emoji: '🐯' },
+            { word: 'lion', chinese: '狮子', phonetic: '[ˈlaɪən]', emoji: '🦁' },
             
-            // Unit 7: 食物 (Food)
-            { unit: "U7", question: "苹果", answer: "apple", hint: "食物" },
-            { unit: "U7", question: "香蕉", answer: "banana", hint: "食物" },
-            { unit: "U7", question: "橙子", answer: "orange", hint: "食物" },
-            { unit: "U7", question: "面包", answer: "bread", hint: "食物" },
-            { unit: "U7", question: "牛奶", answer: "milk", hint: "食物" },
-            { unit: "U7", question: "水", answer: "water", hint: "食物" },
-            { unit: "U7", question: "鸡蛋", answer: "egg", hint: "食物" },
-            { unit: "U7", question: "米饭", answer: "rice", hint: "食物" },
-            { unit: "U7", question: "蛋糕", answer: "cake", hint: "食物" },
-            { unit: "U7", question: "果汁", answer: "juice", hint: "食物" },
+            // Unit 7: 食物
+            { word: 'apple', chinese: '苹果', phonetic: '[ˈæpl]', emoji: '🍎' },
+            { word: 'banana', chinese: '香蕉', phonetic: '[bəˈnɑːnə]', emoji: '🍌' },
+            { word: 'orange', chinese: '橙子', phonetic: '[ˈɒrɪndʒ]', emoji: '🍊' },
+            { word: 'bread', chinese: '面包', phonetic: '[bred]', emoji: '🍞' },
+            { word: 'milk', chinese: '牛奶', phonetic: '[mɪlk]', emoji: '🥛' },
+            { word: 'water', chinese: '水', phonetic: '[ˈwɔːtə]', emoji: '💧' },
+            { word: 'egg', chinese: '鸡蛋', phonetic: '[eɡ]', emoji: '🥚' },
+            { word: 'rice', chinese: '米饭', phonetic: '[raɪs]', emoji: '🍚' },
+            { word: 'cake', chinese: '蛋糕', phonetic: '[keɪk]', emoji: '🍰' },
+            { word: 'juice', chinese: '果汁', phonetic: '[dʒuːs]', emoji: '🧃' },
             
-            // Unit 8: 学校 (School)
-            { unit: "U8", question: "学校", answer: "school", hint: "学校" },
-            { unit: "U8", question: "教室", answer: "classroom", hint: "学校" },
-            { unit: "U8", question: "书", answer: "book", hint: "文具" },
-            { unit: "U8", question: "铅笔", answer: "pencil", hint: "文具" },
-            { unit: "U8", question: "钢笔", answer: "pen", hint: "文具" },
-            { unit: "U8", question: "尺子", answer: "ruler", hint: "文具" },
-            { unit: "U8", question: "书包", answer: "bag", hint: "文具" },
-            { unit: "U8", question: "老师", answer: "teacher", hint: "人物" },
-            { unit: "U8", question: "学生", answer: "student", hint: "人物" },
+            // Unit 8: 学校
+            { word: 'school', chinese: '学校', phonetic: '[skuːl]', emoji: '🏫' },
+            { word: 'classroom', chinese: '教室', phonetic: '[ˈklɑːsrʊm]', emoji: '🏠' },
+            { word: 'book', chinese: '书', phonetic: '[bʊk]', emoji: '📖' },
+            { word: 'pencil', chinese: '铅笔', phonetic: '[ˈpensl]', emoji: '✏️' },
+            { word: 'pen', chinese: '钢笔', phonetic: '[pen]', emoji: '🖊️' },
+            { word: 'ruler', chinese: '尺子', phonetic: '[ˈruːlə]', emoji: '📏' },
+            { word: 'bag', chinese: '书包', phonetic: '[bæɡ]', emoji: '🎒' },
+            { word: 'teacher', chinese: '老师', phonetic: '[ˈtiːtʃə]', emoji: '👨‍🏫' },
+            { word: 'student', chinese: '学生', phonetic: '[ˈstjuːdənt]', emoji: '🎓' },
             
-            // Unit 9: 身体部位 (Body)
-            { unit: "U9", question: "头", answer: "head", hint: "身体" },
-            { unit: "U9", question: "脸", answer: "face", hint: "身体" },
-            { unit: "U9", question: "眼睛", answer: "eye", hint: "身体" },
-            { unit: "U9", question: "鼻子", answer: "nose", hint: "身体" },
-            { unit: "U9", question: "嘴巴", answer: "mouth", hint: "身体" },
-            { unit: "U9", question: "耳朵", answer: "ear", hint: "身体" },
-            { unit: "U9", question: "手", answer: "hand", hint: "身体" },
-            { unit: "U9", question: "脚", answer: "foot", hint: "身体" },
+            // Unit 9: 身体
+            { word: 'head', chinese: '头', phonetic: '[hed]', emoji: '🗣️' },
+            { word: 'face', chinese: '脸', phonetic: '[feɪs]', emoji: '😊' },
+            { word: 'eye', chinese: '眼睛', phonetic: '[aɪ]', emoji: '👀' },
+            { word: 'nose', chinese: '鼻子', phonetic: '[nəʊz]', emoji: '👃' },
+            { word: 'mouth', chinese: '嘴巴', phonetic: '[maʊθ]', emoji: '👄' },
+            { word: 'ear', chinese: '耳朵', phonetic: '[ɪə]', emoji: '👂' },
+            { word: 'hand', chinese: '手', phonetic: '[hænd]', emoji: '✋' },
+            { word: 'foot', chinese: '脚', phonetic: '[fʊt]', emoji: '🦶' },
             
-            // Unit 10: 星期 (Week)
-            { unit: "U10", question: "星期一", answer: "monday", hint: "星期" },
-            { unit: "U10", question: "星期二", answer: "tuesday", hint: "星期" },
-            { unit: "U10", question: "星期三", answer: "wednesday", hint: "星期" },
-            { unit: "U10", question: "星期四", answer: "thursday", hint: "星期" },
-            { unit: "U10", question: "星期五", answer: "friday", hint: "星期" },
-            { unit: "U10", question: "星期六", answer: "saturday", hint: "星期" },
-            { unit: "U10", question: "星期日/天", answer: "sunday", hint: "星期" },
-            { unit: "U10", question: "周/星期", answer: "week", hint: "时间" },
+            // Unit 10: 星期
+            { word: 'Monday', chinese: '星期一', phonetic: '[ˈmʌndeɪ]', emoji: '📅' },
+            { word: 'Tuesday', chinese: '星期二', phonetic: '[ˈtjuːzdeɪ]', emoji: '📅' },
+            { word: 'Wednesday', chinese: '星期三', phonetic: '[ˈwenzdeɪ]', emoji: '📅' },
+            { word: 'Thursday', chinese: '星期四', phonetic: '[ˈθɜːzdeɪ]', emoji: '📅' },
+            { word: 'Friday', chinese: '星期五', phonetic: '[ˈfraɪdeɪ]', emoji: '📅' },
+            { word: 'Saturday', chinese: '星期六', phonetic: '[ˈsætədeɪ]', emoji: '📅' },
+            { word: 'Sunday', chinese: '星期日', phonetic: '[ˈsʌndeɪ]', emoji: '📅' },
+            { word: 'week', chinese: '一周', phonetic: '[wiːk]', emoji: '📆' },
             
-            // Unit 11: 科目 (Subjects)
-            { unit: "U11", question: "英语", answer: "english", hint: "科目" },
-            { unit: "U11", question: "数学", answer: "maths", hint: "科目" },
-            { unit: "U11", question: "语文", answer: "chinese", hint: "科目" },
-            { unit: "U11", question: "音乐", answer: "music", hint: "科目" },
-            { unit: "U11", question: "美术", answer: "art", hint: "科目" },
-            { unit: "U11", question: "体育", answer: "pe", hint: "科目" },
+            // Unit 11: 科目
+            { word: 'English', chinese: '英语', phonetic: '[ˈɪŋɡlɪʃ]', emoji: '📚' },
+            { word: 'maths', chinese: '数学', phonetic: '[mæθs]', emoji: '🔢' },
+            { word: 'Chinese', chinese: '语文', phonetic: '[ˌtʃaɪˈniːz]', emoji: '📖' },
+            { word: 'music', chinese: '音乐', phonetic: '[ˈmjuːzɪk]', emoji: '🎵' },
+            { word: 'art', chinese: '美术', phonetic: '[ɑːt]', emoji: '🎨' },
+            { word: 'PE', chinese: '体育', phonetic: '[piː iː]', emoji: '⚽' },
             
-            // Unit 12: 活动 (Activities)
-            { unit: "U12", question: "阅读", answer: "read", hint: "动词" },
-            { unit: "U12", question: "书写", answer: "write", hint: "动词" },
-            { unit: "U12", question: "画画", answer: "draw", hint: "动词" },
-            { unit: "U12", question: "唱歌", answer: "sing", hint: "动词" },
-            { unit: "U12", question: "跳舞", answer: "dance", hint: "动词" },
-            { unit: "U12", question: "游戏", answer: "play", hint: "动词" },
-            { unit: "U12", question: "听", answer: "listen", hint: "动词" },
-            { unit: "U12", question: "说", answer: "speak", hint: "动词" },
+            // Unit 12: 活动
+            { word: 'read', chinese: '阅读', phonetic: '[riːd]', emoji: '📖' },
+            { word: 'write', chinese: '书写', phonetic: '[raɪt]', emoji: '✍️' },
+            { word: 'draw', chinese: '画画', phonetic: '[drɔː]', emoji: '🎨' },
+            { word: 'sing', chinese: '唱歌', phonetic: '[sɪŋ]', emoji: '🎤' },
+            { word: 'dance', chinese: '跳舞', phonetic: '[dɑːns]', emoji: '💃' },
+            { word: 'play', chinese: '玩', phonetic: '[pleɪ]', emoji: '🎮' },
+            { word: 'listen', chinese: '听', phonetic: '[ˈlɪsən]', emoji: '👂' },
+            { word: 'speak', chinese: '说', phonetic: '[spiːk]', emoji: '🗣️' },
         ];
 
-        let currentQuestions = [];
-        let currentIndex = 0;
-        let score = 0;
-        let userAnswers = [];
+        let currentVocab = [];
+        let cardIndex = 0;
+        let testIndex = 0;
+        let testScore = 0;
+        let testAnswers = [];
+        
+        let startX = 0, currentX = 0;
+        let isDragging = false;
 
-        function shuffleArray(array) {
+        // 随机打乱数组
+        function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [array[i], array[j]] = [array[j], array[i]];
@@ -358,131 +486,180 @@
             return array;
         }
 
-        function startQuiz() {
-            currentQuestions = shuffleArray([...questions]).slice(0, 10);
-            currentIndex = 0;
-            score = 0;
-            userAnswers = [];
-            
-            document.getElementById('startScreen').classList.remove('active');
-            document.getElementById('quizScreen').classList.add('active');
+        // 返回首页
+        function goBack() {
+            document.getElementById('modeSelect').style.display = 'flex';
+            document.getElementById('memoryMode').classList.remove('active');
+            document.getElementById('testMode').classList.remove('active');
             document.getElementById('resultScreen').classList.remove('active');
-            
-            showQuestion();
         }
 
-        function showQuestion() {
-            const q = currentQuestions[currentIndex];
+        // ==================== 记忆模式 ====================
+        function startMemoryMode() {
+            document.getElementById('modeSelect').style.display = 'none';
+            document.getElementById('memoryMode').classList.add('active');
             
-            // 更新进度
-            let progressHTML = '';
-            for (let i = 0; i < currentQuestions.length; i++) {
-                if (i < currentIndex) {
-                    progressHTML += `<div class="progress-item done">✓</div>`;
-                } else if (i === currentIndex) {
-                    progressHTML += `<div class="progress-item current">${i + 1}</div>`;
+            currentVocab = shuffle([...vocabList]).slice(0, 15);
+            cardIndex = 0;
+            showCard();
+            initSwipe();
+        }
+
+        function showCard() {
+            const vocab = currentVocab[cardIndex];
+            document.getElementById('cardImage').textContent = vocab.emoji;
+            document.getElementById('cardWord').textContent = vocab.word;
+            document.getElementById('cardPhonetic').textContent = vocab.phonetic;
+            document.getElementById('cardChinese').textContent = vocab.chinese;
+            document.getElementById('cardIndex').textContent = `${cardIndex + 1} / ${currentVocab.length}`;
+        }
+
+        function speakWord() {
+            const vocab = currentVocab[cardIndex];
+            const utterance = new SpeechSynthesisUtterance(vocab.word);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.8;
+            speechSynthesis.speak(utterance);
+        }
+
+        function initSwipe() {
+            const container = document.getElementById('cardContainer');
+            const card = document.getElementById('flashcard');
+            
+            container.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+                isDragging = true;
+                card.classList.add('swiping');
+            });
+            
+            container.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                currentX = e.touches[0].clientX;
+                const diff = currentX - startX;
+                card.style.transform = `translateX(${diff}px) rotate(${diff * 0.05}deg)`;
+            });
+            
+            container.addEventListener('touchend', () => {
+                if (!isDragging) return;
+                isDragging = false;
+                card.classList.remove('swiping');
+                
+                const diff = currentX - startX;
+                
+                if (diff < -80) {
+                    // 左滑 - 复习（回到上一张）
+                    card.style.transition = 'transform 0.3s';
+                    card.style.transform = 'translateX(-100%) rotate(-20deg)';
+                    setTimeout(() => {
+                        cardIndex = Math.max(0, cardIndex - 1);
+                        card.style.transition = 'none';
+                        card.style.transform = '';
+                        showCard();
+                    }, 200);
+                } else if (diff > 80) {
+                    // 右滑 - 下一个
+                    card.style.transition = 'transform 0.3s';
+                    card.style.transform = 'translateX(100%) rotate(20deg)';
+                    setTimeout(() => {
+                        cardIndex = Math.min(currentVocab.length - 1, cardIndex + 1);
+                        card.style.transition = 'none';
+                        card.style.transform = '';
+                        showCard();
+                    }, 200);
                 } else {
-                    progressHTML += `<div class="progress-item">${i + 1}</div>`;
+                    card.style.transition = 'transform 0.3s';
+                    card.style.transform = '';
                 }
-            }
-            document.getElementById('progress').innerHTML = progressHTML;
+                currentX = 0;
+                startX = 0;
+            });
+        }
+
+        // ==================== 测试模式 ====================
+        function startTestMode() {
+            document.getElementById('modeSelect').style.display = 'none';
+            document.getElementById('testMode').classList.add('active');
             
-            // 显示题目
-            document.getElementById('question').textContent = `(${q.unit}) ${q.question}`;
-            document.getElementById('questionImage').textContent = getEmoji(q.question);
-            document.getElementById('hint').textContent = `提示: ${q.hint}`;
+            currentVocab = shuffle([...vocabList]).slice(0, 10);
+            testIndex = 0;
+            testScore = 0;
+            testAnswers = [];
             
-            // 重置输入框
-            const input = document.getElementById('answerInput');
+            showTestQuestion();
+        }
+
+        function showTestQuestion() {
+            const vocab = currentVocab[testIndex];
+            document.getElementById('testProgress').textContent = `${testIndex + 1} / ${currentVocab.length}`;
+            document.getElementById('testQuestion').textContent = vocab.chinese;
+            document.getElementById('testHint').textContent = '请拼写英文';
+            
+            const input = document.getElementById('testInput');
             input.value = '';
-            input.className = 'answer-input';
+            input.className = 'test-input';
             input.focus();
             
-            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('testFeedback').className = 'test-feedback';
         }
 
-        function getEmoji(word) {
-            const emojiMap = {
-                '你好': '👋', '早上好': '🌅', '下午好': '🌤️', '再见': '👋', '谢谢你': '🙏', '对不起': '😢',
-                '我': '👤', '你': '👤', '他': '👨', '她': '👩', '它': '🐱',
-                '父亲/爸爸': '👨', '母亲/妈妈': '👩', '兄弟/哥哥': '👦', '姐妹/姐姐': '👧', '祖父/爷爷': '👴', '祖母/奶奶': '👵',
-                '一': '1️⃣', '二': '2️⃣', '三': '3️⃣', '四': '4️⃣', '五': '5️⃣', '六': '6️⃣', '七': '7️⃣', '八': '8️⃣', '九': '9️⃣', '十': '🔟',
-                '红色': '🔴', '蓝色': '🔵', '绿色': '🟢', '黄色': '🟡', '橙色': '🟠', '紫色': '🟣', '粉色': '💗', '棕色': '🟤', '黑色': '⚫', '白色': '⚪',
-                '狗': '🐕', '猫': '🐱', '鸟': '🐦', '鱼': '🐟', '兔子': '🐰', '猴子': '🐵', '大象': '🐘', '熊猫': '🐼', '老虎': '🐯', '狮子': '🦁',
-                '苹果': '🍎', '香蕉': '🍌', '橙子': '🍊', '面包': '🍞', '牛奶': '🥛', '水': '💧', '鸡蛋': '🥚', '米饭': '🍚', '蛋糕': '🍰', '果汁': '🧃',
-                '学校': '🏫', '教室': '🏠', '书': '📖', '铅笔': '✏️', '钢笔': '🖊️', '尺子': '📏', '书包': '🎒', '老师': '👨‍🏫', '学生': '🎓',
-                '头': '🗣️', 'face': '😊', '眼睛': '👀', '鼻子': '👃', '嘴巴': '👄', '耳朵': '👂', '手': '✋', '脚': '🦶',
-                '星期一': '📅', '星期二': '📅', '星期三': '📅', '星期四': '📅', '星期五': '📅', '星期六': '📅', '星期日/天': '📅',
-                '英语': '📚', '数学': '🔢', '语文': '📖', '音乐': '🎵', '美术': '🎨', '体育': '⚽',
-                '阅读': '📖', '书写': '✍️', '画画': '🎨', '唱歌': '🎤', '跳舞': '💃', '游戏': '🎮'
-            };
-            return emojiMap[word] || '📝';
-        }
-
-        function normalizeAnswer(answer) {
-            return answer.toLowerCase().trim();
-        }
-
-        function checkAnswer() {
-            const input = document.getElementById('answerInput');
-            const userAnswer = normalizeAnswer(input.value);
-            const q = currentQuestions[currentIndex];
-            const correctAnswer = normalizeAnswer(q.answer);
+        function submitAnswer() {
+            const input = document.getElementById('testInput');
+            const userAnswer = input.value.trim().toLowerCase();
+            const vocab = currentVocab[testIndex];
+            const correctAnswer = vocab.word.toLowerCase();
             
             const isCorrect = userAnswer === correctAnswer;
             
             if (isCorrect) {
-                score++;
+                testScore++;
                 input.classList.add('correct');
-                document.getElementById('feedback').className = 'feedback show correct';
-                document.getElementById('feedback').textContent = '✅ 正确！';
+                document.getElementById('testFeedback').className = 'test-feedback show correct';
+                document.getElementById('testFeedback').textContent = '✅ 正确！';
             } else {
                 input.classList.add('wrong');
-                document.getElementById('feedback').className = 'feedback show wrong';
-                document.getElementById('feedback').textContent = `❌ 正确答案是: ${q.answer}`;
+                document.getElementById('testFeedback').className = 'test-feedback show wrong';
+                document.getElementById('testFeedback').textContent = `❌ 正确: ${vocab.word}`;
             }
             
-            userAnswers.push({
-                question: q.question,
-                selected: input.value,
-                correct: q.answer,
+            testAnswers.push({
+                chinese: vocab.chinese,
+                userAnswer: userAnswer || '(跳过)',
+                correctAnswer: vocab.word,
                 isCorrect: isCorrect
             });
             
             setTimeout(() => {
-                currentIndex++;
-                if (currentIndex < currentQuestions.length) {
-                    showQuestion();
-                } else {
-                    showResult();
-                }
+                nextQuestion();
             }, 1500);
         }
 
-        function skipAnswer() {
-            const q = currentQuestions[currentIndex];
-            userAnswers.push({
-                question: q.question,
-                selected: '(跳过)',
-                correct: q.answer,
+        function skipTest() {
+            const vocab = currentVocab[testIndex];
+            testAnswers.push({
+                chinese: vocab.chinese,
+                userAnswer: '(跳过)',
+                correctAnswer: vocab.word,
                 isCorrect: false
             });
-            
-            currentIndex++;
-            if (currentIndex < currentQuestions.length) {
-                showQuestion();
+            nextQuestion();
+        }
+
+        function nextQuestion() {
+            testIndex++;
+            if (testIndex < currentVocab.length) {
+                showTestQuestion();
             } else {
                 showResult();
             }
         }
 
         function showResult() {
-            document.getElementById('quizScreen').classList.remove('active');
+            document.getElementById('testMode').classList.remove('active');
             document.getElementById('resultScreen').classList.add('active');
             
-            document.getElementById('scoreDisplay').textContent = `${score}/${currentQuestions.length}`;
+            document.getElementById('resultScore').textContent = `${testScore}/${currentVocab.length}`;
             
-            const percentage = (score / currentQuestions.length) * 100;
+            const percentage = (testScore / currentVocab.length) * 100;
             let message = '';
             if (percentage === 100) message = '🎉 太棒了！满分！';
             else if (percentage >= 80) message = '🌟 非常优秀！';
@@ -490,36 +667,18 @@
             else if (percentage >= 40) message = '📚 再加油！';
             else message = '💪 继续努力！';
             
-            document.getElementById('scoreMessage').textContent = message;
-            
-            let detailsHTML = '';
-            userAnswers.forEach((answer, index) => {
-                const status = answer.isCorrect ? '✅' : (answer.selected === '(跳过)' ? '⏭️' : '❌');
-                const yourAnswer = answer.selected === '(跳过)' ? '<span class="your-answer">(跳过)</span>' : 
-                    answer.isCorrect ? answer.selected : `<span class="your-answer">${answer.selected}</span>`;
-                detailsHTML += `
-                    <div class="result-item">
-                        <span>${index + 1}. ${answer.question}</span>
-                        <span>${status}</span>
-                    </div>
-                    <div class="result-item">
-                        <span>你的答案: ${yourAnswer}</span>
-                        <span class="correct-answer">正确答案: ${answer.correct}</span>
-                    </div>
-                `;
-            });
-            document.getElementById('resultDetails').innerHTML = detailsHTML;
+            document.getElementById('resultMessage').textContent = message;
         }
 
-        function restartQuiz() {
+        function restartTest() {
             document.getElementById('resultScreen').classList.remove('active');
-            document.getElementById('startScreen').classList.add('active');
+            startTestMode();
         }
 
         // 回车提交
-        document.getElementById('answerInput').addEventListener('keypress', function(e) {
+        document.getElementById('testInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                checkAnswer();
+                submitAnswer();
             }
         });
     </script>

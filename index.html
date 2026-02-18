@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上海小学三年级英语测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+        }
+        .start-screen, .quiz-screen, .result-screen {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        .btn {
+            display: block;
+            width: 200px;
+            margin: 30px auto;
+            padding: 15px 30px;
+            font-size: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        .progress {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+        .progress-item {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            background: #ddd;
+            color: #888;
+        }
+        .progress-item.done {
+            background: #4caf50;
+            color: white;
+        }
+        .progress-item.current {
+            background: #667eea;
+            color: white;
+        }
+        .question {
+            font-size: 22px;
+            text-align: center;
+            margin: 30px 0;
+            color: #333;
+        }
+        .question-image {
+            font-size: 60px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .option {
+            padding: 20px;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .option:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .option.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+        .option.wrong {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+        .score-display {
+            text-align: center;
+            font-size: 60px;
+            color: #667eea;
+            margin: 20px 0;
+        }
+        .score-message {
+            text-align: center;
+            font-size: 24px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+        .result-details {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>📚 上海小学三年级英语测试</h1>
+            <p class="subtitle">随机抽取10道题目，快来挑战吧！</p>
+            
+            <!-- 开始界面 -->
+            <div class="start-screen active" id="startScreen">
+                <div style="text-align: center; padding: 40px 0;">
+                    <div style="font-size: 80px; margin-bottom: 20px;">🎓</div>
+                    <p style="font-size: 18px; color: #666; margin-bottom: 10px;">测试内容：</p>
+                    <ul style="text-align: left; display: inline-block; color: #888;">
+                        <li>✅ 26个英文字母</li>
+                        <li>✅ 基础单词（颜色、数字、动物、食物等）</li>
+                        <li>✅ 简单对话</li>
+                        <li>✅ 常用表达</li>
+                    </ul>
+                </div>
+                <button class="btn" onclick="startQuiz()">开始测试 ▶</button>
+            </div>
+            
+            <!-- 答题界面 -->
+            <div class="quiz-screen" id="quizScreen">
+                <div class="progress" id="progress"></div>
+                <div class="question" id="question"></div>
+                <div class="question-image" id="questionImage"></div>
+                <div class="options" id="options"></div>
+            </div>
+            
+            <!-- 结果界面 -->
+            <div class="result-screen" id="resultScreen">
+                <div class="score-display" id="scoreDisplay"></div>
+                <div class="score-message" id="scoreMessage"></div>
+                <div class="result-details" id="resultDetails"></div>
+                <button class="btn" onclick="restartQuiz()">再测一次 🔄</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // 字母题
+            { type: 'letter', question: '请选出大写字母 A 对应的小写形式', answer: 'a', options: ['a', 'b', 'c', 'd', 'e'], image: '' },
+            { type: 'letter', question: '大写 B 的小写是什么？', answer: 'b', options: ['a', 'b', 'c', 'd', 'e'], image: '' },
+            { type: 'letter', question: '哪个是大写字母 C？', answer: 'C', options: ['c', 'C', 'D', 'E', 'F'], image: '' },
+            
+            // 颜色题
+            { type: 'vocab', question: '这是什么颜色？', answer: 'red', options: ['red', 'blue', 'green', 'yellow', 'pink'], image: '🔴' },
+            { type: 'vocab', question: '天空是什么颜色？', answer: 'blue', options: ['red', 'blue', 'green', 'yellow', 'orange'], image: '🌤️' },
+            { type: 'vocab', question: '草地是什么颜色？', answer: 'green', options: ['red', 'blue', 'green', 'yellow', 'brown'], image: '🌿' },
+            { type: 'vocab', question: '香蕉是什么颜色？', answer: 'yellow', options: ['red', 'blue', 'green', 'yellow', 'brown'], image: '🍌' },
+            
+            // 数字题
+            { type: 'number', question: '数字 5 用英语怎么说？', answer: 'five', options: ['four', 'five', 'six', 'seven', 'eight'], image: '5️⃣' },
+            { type: 'number', question: '数字 8 用英语怎么说？', answer: 'eight', options: ['six', 'seven', 'eight', 'nine', 'ten'], image: '8️⃣' },
+            { type: 'number', question: '数字 10 用英语怎么说？', answer: 'ten', options: ['eight', 'nine', 'ten', 'eleven', 'twelve'], image: '🔟' },
+            
+            // 动物题
+            { type: 'animal', question: '这是什么动物？', answer: 'cat', options: ['dog', 'cat', 'bird', 'fish', 'rabbit'], image: '🐱' },
+            { type: 'animal', question: '狗的英语是？', answer: 'dog', options: ['dog', 'cat', 'bird', 'fish', 'duck'], image: '🐕' },
+            { type: 'animal', question: '小鸟的英语是？', answer: 'bird', options: ['dog', 'cat', 'bird', 'fish', 'tiger'], image: '🐦' },
+            
+            // 食物题
+            { type: 'food', question: '苹果的英语是？', answer: 'apple', options: ['banana', 'apple', 'orange', 'grape', 'pear'], image: '🍎' },
+            { type: 'food', question: '面包的英语是？', answer: 'bread', options: ['bread', 'rice', 'milk', 'water', 'egg'], image: '🍞' },
+            { type: 'food', question: '牛奶的英语是？', answer: 'milk', options: ['water', 'juice', 'milk', 'tea', 'coffee'], image: '🥛' },
+            
+            // 家庭成员
+            { type: 'family', question: '妈妈的英语是？', answer: 'mother', options: ['father', 'mother', 'brother', 'sister', 'grandmother'], image: '👩' },
+            { type: 'family', question: '爸爸的英语是？', answer: 'father', options: ['father', 'mother', 'brother', 'sister', 'grandfather'], image: '👨' },
+            { type: 'family', question: '哥哥的英语是？', answer: 'brother', options: ['father', 'mother', 'brother', 'sister', 'baby'], image: '👦' },
+            
+            // 身体部位
+            { type: 'body', question: '眼睛的英语是？', answer: 'eye', options: ['eye', 'ear', 'nose', 'mouth', 'hand'], image: '👀' },
+            { type: 'body', question: '鼻子的英语是？', answer: 'nose', options: ['eye', 'ear', 'nose', 'mouth', 'face'], image: '👃' },
+            
+            // 日常对话
+            { type: 'dialog', question: '见面打招呼应该说？', answer: 'Hello!', options: ['Hello!', 'Goodbye!', 'Thank you!', 'Sorry!', 'Good night!'], image: '👋' },
+            { type: 'dialog', question: '感谢别人时应该说？', answer: 'Thank you!', options: ['Hello!', 'Goodbye!', 'Thank you!', 'Sorry!', 'Please!'], image: '🙏' },
+            { type: 'dialog', question: '再见怎么说？', answer: 'Goodbye!', options: ['Hello!', 'Goodbye!', 'Thank you!', 'Sorry!', 'OK!'], image: '👋' },
+            { type: 'dialog', question: '对不起怎么说？', answer: 'Sorry!', options: ['Hello!', 'Goodbye!', 'Thank you!', 'Sorry!', 'Please!'], image: '😢' },
+            
+            // 星期
+            { type: 'week', question: '今天是 Monday（星期一），明天是？', answer: 'Tuesday', options: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], image: '📅' },
+            { type: 'week', question: '一周的第一天是？', answer: 'Sunday', options: ['Monday', 'Saturday', 'Sunday', 'Tuesday', 'Wednesday'], image: '🗓️' },
+            
+            // 动词
+            { type: 'verb', question: 'eat（吃）的正在进行时是？', answer: 'eating', options: ['eat', 'eating', 'eats', 'ate', 'eaten'], image: '🍽️' },
+            { type: 'verb', question: 'run（跑）的过去式是？', answer: 'ran', options: ['run', 'running', 'runs', 'ran', 'ranned'], image: '🏃' },
+            
+            // 问候语
+            { type: 'greeting', question: '早上好怎么说？', answer: 'Good morning!', options: ['Good morning!', 'Good afternoon!', 'Good evening!', 'Good night!', 'Hello!'], image: '🌅' },
+            { type: 'greeting', question: '晚安怎么说？', answer: 'Good night!', options: ['Good morning!', 'Good afternoon!', 'Good evening!', 'Good night!', 'Goodbye!'], image: '🌙' },
+        ];
+
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startQuiz() {
+            currentQuestions = shuffleArray([...questions]).slice(0, 10);
+            currentIndex = 0;
+            score = 0;
+            userAnswers = [];
+            
+            document.getElementById('startScreen').classList.remove('active');
+            document.getElementById('quizScreen').classList.add('active');
+            document.getElementById('resultScreen').classList.remove('active');
+            
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = currentQuestions[currentIndex];
+            
+            // 更新进度条
+            let progressHTML = '';
+            for (let i = 0; i < currentQuestions.length; i++) {
+                if (i < currentIndex) {
+                    progressHTML += `<div class="progress-item done">✓</div>`;
+                } else if (i === currentIndex) {
+                    progressHTML += `<div class="progress-item current">${i + 1}</div>`;
+                } else {
+                    progressHTML += `<div class="progress-item">${i + 1}</div>`;
+                }
+            }
+            document.getElementById('progress').innerHTML = progressHTML;
+            
+            // 显示题目
+            document.getElementById('question').textContent = q.question;
+            document.getElementById('questionImage').textContent = q.image || '';
+            
+            // 显示选项
+            let optionsHTML = '';
+            const shuffledOptions = shuffleArray([...q.options]);
+            shuffledOptions.forEach(opt => {
+                optionsHTML += `<div class="option" onclick="selectOption('${opt}', this)">${opt}</div>`;
+            });
+            document.getElementById('options').innerHTML = optionsHTML;
+        }
+
+        function selectOption(selected, element) {
+            const q = currentQuestions[currentIndex];
+            const isCorrect = selected === q.answer;
+            
+            // 禁用所有选项
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.textContent === q.answer) {
+                    opt.classList.add('correct');
+                }
+            });
+            
+            if (isCorrect) {
+                score++;
+                element.classList.add('correct');
+            } else {
+                element.classList.add('wrong');
+            }
+            
+            userAnswers.push({
+                question: q.question,
+                selected: selected,
+                correct: q.answer,
+                isCorrect: isCorrect
+            });
+            
+            // 延迟进入下一题
+            setTimeout(() => {
+                currentIndex++;
+                if (currentIndex < currentQuestions.length) {
+                    showQuestion();
+                } else {
+                    showResult();
+                }
+            }, 1000);
+        }
+
+        function showResult() {
+            document.getElementById('quizScreen').classList.remove('active');
+            document.getElementById('resultScreen').classList.add('active');
+            
+            const percentage = (score / currentQuestions.length) * 100;
+            document.getElementById('scoreDisplay').textContent = `${score}/${currentQuestions.length}`;
+            
+            let message = '';
+            if (percentage === 100) {
+                message = '🎉 太棒了！满分！';
+            } else if (percentage >= 80) {
+                message = '🌟 非常优秀！';
+            } else if (percentage >= 60) {
+                message = '👍 做得不错！';
+            } else if (percentage >= 40) {
+                message = '📚 再加油！';
+            } else {
+                message = '💪 继续努力！';
+            }
+            document.getElementById('scoreMessage').textContent = message;
+            
+            // 显示详情
+            let detailsHTML = '';
+            userAnswers.forEach((answer, index) => {
+                const status = answer.isCorrect ? '✅' : '❌';
+                detailsHTML += `
+                    <div class="result-item">
+                        <span>${index + 1}. ${answer.question}</span>
+                        <span>${status}</span>
+                    </div>
+                `;
+            });
+            document.getElementById('resultDetails').innerHTML = detailsHTML;
+        }
+
+        function restartQuiz() {
+            document.getElementById('resultScreen').classList.remove('active');
+            document.getElementById('startScreen').classList.add('active');
+        }
+    </script>
+</body>
+</html>

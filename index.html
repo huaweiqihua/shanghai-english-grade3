@@ -291,7 +291,7 @@
                     <div class="card-word" id="cardWord">dog</div>
                     <div class="card-phonetic" id="cardPhonetic">[dɒɡ]</div>
                     <div class="card-chinese" id="cardChinese">狗</div>
-                    <button class="card-audio" onclick="speakWord()">
+                    <button class="card-audio" onclick="speakWord(event)">
                         🔊 朗读
                     </button>
                 </div>
@@ -514,7 +514,11 @@
             document.getElementById('cardIndex').textContent = `${cardIndex + 1} / ${currentVocab.length}`;
         }
 
-        function speakWord() {
+        function speakWord(e) {
+            if (e) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
             const vocab = currentVocab[cardIndex];
             const utterance = new SpeechSynthesisUtterance(vocab.word);
             utterance.lang = 'en-US';
@@ -547,21 +551,21 @@
                 const diff = currentX - startX;
                 
                 if (diff < -80) {
-                    // 左滑 - 复习（回到上一张）
+                    // 左滑 - 下一个（用户要求）
                     card.style.transition = 'transform 0.3s';
                     card.style.transform = 'translateX(-100%) rotate(-20deg)';
                     setTimeout(() => {
-                        cardIndex = Math.max(0, cardIndex - 1);
+                        cardIndex = Math.min(currentVocab.length - 1, cardIndex + 1);
                         card.style.transition = 'none';
                         card.style.transform = '';
                         showCard();
                     }, 200);
                 } else if (diff > 80) {
-                    // 右滑 - 下一个
+                    // 右滑 - 复习/上一个（用户要求）
                     card.style.transition = 'transform 0.3s';
                     card.style.transform = 'translateX(100%) rotate(20deg)';
                     setTimeout(() => {
-                        cardIndex = Math.min(currentVocab.length - 1, cardIndex + 1);
+                        cardIndex = Math.max(0, cardIndex - 1);
                         card.style.transition = 'none';
                         card.style.transform = '';
                         showCard();
